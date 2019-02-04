@@ -116,7 +116,7 @@ let disconnectedTmp = [];
 io.on('connection', function (socket) {
     console.log('someone connected, show him da wey brotherz');
     socket.on('new_player', function (data) {
-        players[socket.id] = new Player(userName, userColor);
+        players[socket.id] = new Player(userName, userColor,160,1951,330,853);
         players[socket.id].print('New player');
         addNews(socket, `${players[socket.id].name} connected!`);
         socket.emit('playerdata', userName, userColor);

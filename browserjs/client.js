@@ -8,9 +8,9 @@ let usercolor;
 const cSizeX = 1500;
 const cSizeY = 650;
 const cMarginX = 200;
-const cMarginY = 150;
-const bSizeX = 3600;
-const bSizeY = 1800;
+const cMarginY = 450;
+const bSizeX = 2111;
+const bSizeY = 1013;
 const nickOffset = 32;
 const hBarMarginX = 20;
 const hBarMarginY = 15;
@@ -157,16 +157,16 @@ function onUpdate(state) {
 
         if (player.lastChat.killtime > Date.now()) {
             drawImage(loadedImages['balloon1.png'],
-                player.x - viewPosX,
-                player.y - viewPosY-100,
+                player.x - viewPosX+50 -150*getScale(player),
+                player.y - viewPosY-60 - 200*getScale(player),
                 0.1,
                 0);
 
             ctx.font = "15px Comic Sans MS";
             ctx.fillStyle = "black";
             ctx.textAlign = "left";
-            var x = player.x - viewPosX - 55;
-            var y = player.y - viewPosY - 137;
+            var x = player.x - viewPosX+50 -150*getScale(player)-55;
+            var y = player.y -viewPosY - 200*getScale(player)-97;
             var lineheight = 15;
             var lines = player.lastChat.data.split('\n');
             for (var i = 0; i < lines.length; i++)
