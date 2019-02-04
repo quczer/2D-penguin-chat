@@ -44,19 +44,25 @@ app.get('/', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render('register.html', { nametaken: false });
+    res.render('register.html', { nametaken: false, emptyName: false, emptyPassword: false});
 });
 
 app.post('/register', (req, res) => {
+    if (req.body.login) {
+        res.redirect(302, '/login');
+        return;
+    }
     let n = req.body.name;
     let p = req.body.password;
     let c = req.body.color;
-    if (user.get(n) != null) {
-        res.render('register.html', { nametaken: true });
+    if (n == ""|| p == "" || user.get(n) != null) {
+        res.render('register.html', { nametaken: (user.get(n) != null), emptyName: (n == ""), emptyPassword: (p == "")});
         return;
     }
     user.create(n, p, c);
-    res.end(`<h1>Congrats ${n}, you are registered! Your password is ${p}</h1>`);
+    res.end(`<b>Congrats ${n}, you are registered! Your password is ${p}<br>
+    <form action= "/login">
+    <input type="submit" name="ref" value="Go to log in menu"></form></b>`);
 });
 
 app.get('/login', (req, res) => {
@@ -66,6 +72,10 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
     if (req.body.guest) {
         res.redirect(302, '/guest');
+        return;
+    }
+    if (req.body.register) {
+        res.redirect(302, '/register');
         return;
     }
     let n = req.body.name;

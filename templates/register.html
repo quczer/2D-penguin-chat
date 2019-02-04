@@ -13,8 +13,14 @@
         <% if (nametaken) { %>
             <div style="color:red">Name already taken</div><br>
         <% } %>
+        <% if (emptyName) { %>
+            <div style="color:red">Name cannot be blank!</div><br>
+        <% } %>
         <b>Password: </b><br>
         <input type="password" name="password"><br>
+        <% if (emptyPassword) { %>
+            <div style="color:red">Password cannot be blank!</div><br>
+        <% } %>
         <b>Color:</b><br>
         
             <% var options= [
