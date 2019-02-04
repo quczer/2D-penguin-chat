@@ -31,6 +31,9 @@ var movement = {
     left: false,
     right: false
 };
+var getScale = function(player){
+    return Math.max(0.05, 0.25 * player.y/bSizeY);
+}
 
 document.addEventListener('keydown', function (event) {
     let chatInput =
@@ -156,15 +159,15 @@ function onUpdate(state) {
         drawImage(img,
             player.x - viewPosX,
             player.y - viewPosY,
-            Math.max(0.03, 0.250 * player.y/bSizeY),
+            getScale(player),
             player.angle);
             
 
         if (player.health >0)
             drawImage(loadedImages['balloon1.png'],
                 player.x - viewPosX,
-                player.y - viewPosY,
-                planeScale,
+                player.y - viewPosY - 50 - getScale(player) * 900,
+                0.1,
                 0);
         if (player.health < 10)
             drawImage(loadedImages['smoke.png'],
