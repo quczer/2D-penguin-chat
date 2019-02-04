@@ -19,9 +19,6 @@ function Player(name, ctr) {
     this.shootSpeed = 0.2;
     this.health = 100;
     this.isAlive = true;
-    this.respawnCounter = 0;
-    this.fragCtr = 0;
-    this.color = -1;
     this.lastChat= {
         data:'',
         killtime: 0

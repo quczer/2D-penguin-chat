@@ -3,12 +3,9 @@ let canvas;
 let ctx;
 let socket;
 let username;
-let bullets = [];
 let playerColor = "rgb(179, 71, 0)";
 
-const respawnTime = 7;
 const planeScale = 0.1;
-const bulletScale = 0.12;
 const cSizeX = 1500;
 const cSizeY = 650;
 const cMarginX = 200;
@@ -78,7 +75,7 @@ document.addEventListener('keyup', function (event) {
 });
 
 function prepareImages(imagesLoadedCB) {
-    let images = ['balloon1.png', 'bg2.jpg', 'pingu1.png', 'pingu2.png', 'bullet.png', 'bullet2.png', 'bullet3.png', 'smoke.png'];
+    let images = ['balloon1.png', 'bg2.jpg', 'pingu1.png', 'pingu2.png'];
     let promiseArray = images.map(function (imgurl) {
         let prom = new Promise(function (resolve, reject) {
             let img = new Image();
@@ -116,7 +113,6 @@ function onUpdate(state) {
         return;
 
     // change viewPos
-    viewPosX, cSizeX, cMarginX, myPenguin.x;
     if (myPenguin.x - viewPosX > cSizeX - cMarginX)
         viewPosX = myPenguin.x + cMarginX - cSizeX;
     if (myPenguin.x - viewPosX < cMarginX)

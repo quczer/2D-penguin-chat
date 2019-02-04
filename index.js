@@ -9,8 +9,6 @@ const user = require('./model/user');
 const sha256 = require('js-sha256').sha256;
 const playersModule = require('./serverjs/player');
 let Player = playersModule.Player;
-const bulletsModule = require('./serverjs/bullet');
-let Bullet = bulletsModule.Bullet;
 
 const app = express();
 let userName;
@@ -123,9 +121,6 @@ io.on('connection', function (socket) {
         let res = players[socket.id].act(data);
         if (res !== false)
             io.sockets.emit('news', res);
-        if (data.space && players[socket.id].isAlive && players[socket.id].tryToShoot()) {
-            spawnBullet(socket, players[socket.id]);
-        }
     });
     socket.on('disconnect', function () {
         disconnectedTmp.push(`${players[socket.id].name} disconnected!`);
@@ -146,51 +141,12 @@ io.on('connection', function (socket) {
     });
 });
 
-function testCollision(player, bullet) {
-    return (player.x - bullet.x) * (player.x - bullet.x) +
-        (player.y - bullet.y) * (player.y - bullet.y) <= 2134 + 1673;
-}
+setInterval(function() {
 
-setInterval(function () {
-    for (let id = bullets.length - 1; id >= 0; id--) {
-        if (bullets[id].x < 50 || bullets[id].x > 1920 + 50
-            || bullets[id].y < 50 || bullets[id].y > 1200 + 50)
-            bullets.splice(id, 1);
-        else
-            bullets[id].act();
-    }
-
-    for (pId in players) {
-        for (let bId = bullets.length - 1; bId >= 0; bId--) {
-            let p = players[pId];
-            let b = bullets[bId];
-            if (p.isAlive && b.owner !== p.ctr && testCollision(p, b)) {
-                p.health -= b.dmg;
-                console.log(`${p.name} got shot`);
-
-                if (p.health <= 0) {
-                    p.isAlive = false;
-                    p.respawnCounter = 0;
-                    p.health = 100;
-                    for (pId2 in players) {
-                        let p2 = players[pId2];
-                        if (p2.ctr === b.owner) {
-                            io.sockets.emit('news', `${p2.name} pwned ${p.name}`);
-                            p2.fragCtr++;
-                            p.fragCtr--;
-                        }
-                    }
-                }
-
-                bullets.splice(bId, 1);
-            }
-        }
-    }
-
-    let reducedPlayers = [];
-    for (let id in players) {
+    let updatedPlayers = [];
+    for(let id in players){
         let p = players[id];
-        reducedPlayers.push({
+        updatedPlayers.push({
             "name": p.name,
             "x": p.x,
             "y": p.y,
@@ -203,18 +159,8 @@ setInterval(function () {
         });
     }
 
-    let reducedBullets = [];
-    for (let id in bullets) {
-        let b = bullets[id];
-        reducedBullets.push({
-            "x": b.x,
-            "y": b.y,
-            "angle": b.angle
-        });
-    }
-
-    io.sockets.emit('state', { "players": reducedPlayers });
-    for (var id in disconnectedTmp)
+    io.sockets.emit('state', {"players": updatedPlayers});
+    for(var id in disconnectedTmp)
         io.sockets.emit('news', disconnectedTmp[id]);
     disconnectedTmp = [];
 }, 1000 / 60);
