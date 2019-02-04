@@ -12,6 +12,7 @@ let Player = playersModule.Player;
 
 const app = express();
 let userName;
+let userColor;
 
 const server = http.Server(app);
 const io = socketIO(server);
@@ -76,7 +77,8 @@ app.post('/login', (req, res) => {
     }
     req.session.user = u;
     userName = u.name;
-    console.log(`${req.session.user};${userName}`);
+    userColor = u.color;
+    console.log(`${req.session.user};${userName};${userColor}`);
     res.redirect(302, '/');
 });
 
@@ -104,10 +106,10 @@ let disconnectedTmp = [];
 io.on('connection', function (socket) {
     console.log('someone connected, show him da wey brotherz');
     socket.on('new_player', function (data) {
-        players[socket.id] = new Player(userName);
+        players[socket.id] = new Player(userName, userColor);
         players[socket.id].print('New player');
         addNews(socket, `${players[socket.id].name} connected!`);
-        socket.emit('playername', userName);
+        socket.emit('playerdata', userName, userColor);
     });
     socket.on('movement', function (data) {
         let res = players[socket.id].act(data);
@@ -129,7 +131,6 @@ io.on('connection', function (socket) {
 });
 
 setInterval(function() {
-
     let updatedPlayers = [];
     for(let id in players){
         let p = players[id];
@@ -137,7 +138,8 @@ setInterval(function() {
             "name": p.name,
             "x": p.x,
             "y": p.y,
-            "lastChat": p.lastChat
+            "lastChat": p.lastChat,
+            "color": p.color
         });
     }
 

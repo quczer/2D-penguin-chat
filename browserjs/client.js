@@ -3,6 +3,7 @@ let canvas;
 let ctx;
 let socket;
 let username;
+let usercolor;
 
 const cSizeX = 1500;
 const cSizeY = 650;
@@ -25,8 +26,8 @@ var movement = {
     left: false,
     right: false
 };
-var getScale = function(player){
-    return Math.max(0.05, 0.25 * player.y/bSizeY);
+var getScale = function (player) {
+    return Math.max(0.30, 0.9 * player.y / bSizeY);
 }
 
 document.addEventListener('keydown', function (event) {
@@ -54,7 +55,7 @@ document.addEventListener('keydown', function (event) {
 });
 
 document.addEventListener('keyup', function (event) {
-    
+
     switch (event.keyCode) {
         case 65: // A
             movement.left = false;
@@ -73,7 +74,7 @@ document.addEventListener('keyup', function (event) {
 });
 
 function prepareImages(imagesLoadedCB) {
-    let images = ['balloon1.png', 'bg2.jpg', 'pingu1.png', 'pingu2.png'];
+    let images = ['balloon1.png', 'bg2.jpg', 'pingu0.png','pingu1.png', 'pingu2.png', 'pingu3.png'];
     let promiseArray = images.map(function (imgurl) {
         let prom = new Promise(function (resolve, reject) {
             let img = new Image();
@@ -133,23 +134,28 @@ function onUpdate(state) {
     ctx.drawImage(loadedImages['bg2.jpg'], -viewPosX, -viewPosY);
     for (let id in state) {
         let player = state[id];
-        img = loadedImages['pingu1.png'];
-        console.log(player);
-        switch(player.color){
-            case -1:
+        img = loadedImages['pingu0.png'];
+        switch (player.color) {
+            case "1":
+                img = loadedImages['pingu1.png'];
+                break;
+            case "2":
                 img = loadedImages['pingu2.png'];
-            break;
+                break;
+            case "3":
+                img = loadedImages['pingu3.png'];
+                break;
         }
+        console.log(player.color, img);
 
         drawImage(img,
             player.x - viewPosX,
             player.y - viewPosY,
             getScale(player),
-            player.angle);
-            
+            0);
 
-        if (player.lastChat.killtime > Date.now())
-        {
+
+        if (player.lastChat.killtime > Date.now()) {
             drawImage(loadedImages['balloon1.png'],
                 player.x - viewPosX,
                 player.y - viewPosY-100,
@@ -159,19 +165,19 @@ function onUpdate(state) {
             ctx.font = "15px Comic Sans MS";
             ctx.fillStyle = "black";
             ctx.textAlign = "left";
-            var x = player.x - viewPosX-55;
-            var y = player.y - viewPosY-137;
+            var x = player.x - viewPosX - 55;
+            var y = player.y - viewPosY - 137;
             var lineheight = 15;
             var lines = player.lastChat.data.split('\n');
-            for (var i = 0; i<lines.length; i++)
-                ctx.fillText(lines[i], x, y + (i*lineheight) );
+            for (var i = 0; i < lines.length; i++)
+                ctx.fillText(lines[i], x, y + (i * lineheight));
         }
 
         ctx.font = "15px Comic Sans MS";
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         ctx.fillText('[' + player.name + ']', player.x - viewPosX, player.y - viewPosY + nickOffset);
-    }  
+    }
 
     ctx.textAlign = "left";
     for (let nId in newsArray) {
@@ -225,8 +231,9 @@ function onResourcesLoaded() {
         onNews(data);
     });
 
-    socket.on('playername', function (data) {
-        username = data;
+    socket.on('playerdata', function (playername, playercolor) {
+        username = playername;
+        usercolor = playercolor;
     });
 
   //  socket.on('chat', receiveChat);
@@ -241,36 +248,31 @@ function onResourcesLoaded() {
 
 function submitChat() {
     data = document.getElementById('chat-input').value;
-    data=data.trim();
+    data = data.trim();
     tab = data.split(" ");
     text = "";
-    let j=0;  
-    temp="";
-    let i=0;
-    for( ;i<tab.length;i++)
-    {
-        
-        if(temp.length==0 ||(temp.length + tab[i].length<15))
-        {
-            temp+=tab[i]+" "
+    let j = 0;
+    temp = "";
+    let i = 0;
+    for (; i < tab.length; i++) {
+
+        if (temp.length == 0 || (temp.length + tab[i].length < 15)) {
+            temp += tab[i] + " "
         }
-        else
-        {
-            if(j<5)
-            {
-                text+=temp +"\n";
-                temp="";
+        else {
+            if (j < 5) {
+                text += temp + "\n";
+                temp = "";
                 j++;
                 i--;
-            }     
-            else 
-            {
+            }
+            else {
                 break;
             }
         }
     }
-    if(i == tab.length)
-        text+=temp;
+    if (i == tab.length)
+        text += temp;
 
     document.getElementById('chat-input').blur();
     socket.emit('chat', text, Date.now() + 3000);

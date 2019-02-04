@@ -3,12 +3,13 @@ function getLucky(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-function Player(name) {
+function Player(name, color) {
     this.name = name;
     this.x = getLucky(0 + 200, 1920 - 200);
     this.y = getLucky(0 + 200, 1200 - 200);
     this.speed = 200;
     this.lastTime = Date.now();
+    this.color = color;
     this.lastChat= {
         data:'',
         killtime: 0
