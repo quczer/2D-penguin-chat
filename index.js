@@ -101,17 +101,10 @@ function addNews(socket, msg) {
 
 let players = {};
 let disconnectedTmp = [];
-let bullets = [];
-
-function spawnBullet(socket, plane) {
-    //socket.emit('new_bullet', newBullet);
-    bullets.push(new Bullet(plane.x, plane.y, plane.angle, 1000, plane.ctr));
-}
 
 io.on('connection', function (socket) {
     console.log('someone connected, show him da wey brotherz');
     socket.on('new_player', function (data) {
-        //console.log(`new_player ${socket.id}`);
         players[socket.id] = new Player(userName, playerCtr++);
         players[socket.id].print('New player');
         addNews(socket, `${players[socket.id].name} connected!`);
@@ -123,7 +116,6 @@ io.on('connection', function (socket) {
             io.sockets.emit('news', res);
     });
     socket.on('disconnect', function() {
-        //console.log(`${players[socket.id].name} disconnected!`);
         addNews(socket, `${players[socket.id].name} disconnected!`);
         disconnectedTmp.push(`${players[socket.id].name} disconnected!`);
         delete players[socket.id];
@@ -132,14 +124,8 @@ io.on('connection', function (socket) {
       data = data.trim();
       players[socket.id].lastChat.data = data;
       players[socket.id].lastChat.killtime = killtime;
-      //console.log(players[socket.id].lastChat)     
       if (data == '') return;
-      
-      console.log(players[socket.id].name + ': ' + data);
-      io.sockets.emit('chat', {
-        name: players[socket.id].name,
-        message: data,
-      });
+    
     });
 });
 
@@ -152,11 +138,6 @@ setInterval(function() {
             "name": p.name,
             "x": p.x,
             "y": p.y,
-            "angle": p.angle,
-            "health": p.health,
-            "isAlive": p.isAlive,
-            "respawnCounter":p.respawnCounter,
-            "fragCtr": p.fragCtr,
             "lastChat": p.lastChat
         });
     }

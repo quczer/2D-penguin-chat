@@ -5,7 +5,6 @@ let socket;
 let username;
 let playerColor = "rgb(179, 71, 0)";
 
-const planeScale = 0.1;
 const cSizeX = 1500;
 const cSizeY = 650;
 const cMarginX = 200;
@@ -132,7 +131,6 @@ function onUpdate(state) {
     if (viewPosY > bSizeY - cSizeY)
         viewPosY = bSizeY - cSizeY;
     ctx.drawImage(loadedImages['bg2.jpg'], -viewPosX, -viewPosY);
-    let scoreArray = [];
     for (let id in state) {
         let player = state[id];
         img = loadedImages['pingu1.png'];
@@ -155,7 +153,7 @@ function onUpdate(state) {
             drawImage(loadedImages['balloon1.png'],
                 player.x - viewPosX,
                 player.y - viewPosY-100,
-                planeScale,
+                0.1,
                 0);
 
             ctx.font = "15px Comic Sans MS";
@@ -183,21 +181,6 @@ function onUpdate(state) {
     }
 
 }
-
-function drawHud(myPenguin) {
-    // ctx.fillStyle = '#808080';
-    // ctx.fillRect(0, 0, cSizeX, 30);
-    ctx.fillStyle = "black";
-    ctx.fillRect(cSizeX - hBarMarginX - hBarWidth - 3, hBarMarginY - 3, hBarWidth + 6, hBarHeigth + 6);
-    var grd = ctx.createLinearGradient(cSizeX - hBarMarginX - hBarWidth, 0, cSizeX - hBarMarginX - hBarWidth * (1 / 3), 0);
-    grd.addColorStop(0, "red");
-    grd.addColorStop(1, "green");
-    ctx.fillStyle = grd;
-    ctx.fillRect(cSizeX - hBarMarginX - hBarWidth, hBarMarginY, hBarWidth * (myPenguin.health / 100), hBarHeigth);
-    ctx.font = "10px Comic Sans MS";
-    ctx.fillStyle = "yellow";
-    ctx.fillText('Health', cSizeX - hBarMarginX - hBarWidth + hBarWidth / 2, hBarMarginY);
-};
 
 function drawImage(image, x, y, scale, rotation) {
     ctx.setTransform(scale, 0, 0, scale, x, y); // sets scale and origin
@@ -246,7 +229,8 @@ function onResourcesLoaded() {
         username = data;
     });
 
-    socket.on('chat', receiveChat);
+  //  socket.on('chat', receiveChat);
+
     document.getElementById('chat-input').
         addEventListener('keyup', function (event) {
             if (event.keyCode === 13) {
@@ -293,9 +277,4 @@ function submitChat() {
     document.getElementById('chat-input').value = '';
 }
 
-function receiveChat(data) {
-    document.getElementById('chat').innerHTML +=
-        '<b style="color: ' + playerColor + '">' + data.name + '</b>: ' + data.message + '<br>';
-    var elem = document.getElementById('chat');
-    elem.scrollTop = elem.scrollHeight;
-}
+
