@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ya'll've't to register</title>
+    <title>Register</title>
 </head>
 <body>
     <form action="/register" method="POST">
@@ -15,6 +15,18 @@
         <% } %>
         <b>Password: </b><br>
         <input type="password" name="password"><br>
+        <b>Color:</b><br>
+        
+            <% var options= [
+                { value : 0, text : 'Red' },
+                { value : 1, text : 'Blue' },
+                { value : 2, text : 'Black' }
+            ]
+            %>
+            
+            <% options.forEach( option => { %>
+                <input type="radio" name="color" value=<%= option.value %>> <%= option.text%><br>
+            <% }) %>
         <input type="submit" value="Register">
     </form>
 </body>

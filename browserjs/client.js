@@ -9,8 +9,8 @@ let playerColor = "rgb(179, 71, 0)";
 const respawnTime = 7;
 const planeScale = 0.1;
 const bulletScale = 0.12;
-const cSizeX = 1800;
-const cSizeY = 800;
+const cSizeX = 1500;
+const cSizeY = 650;
 const cMarginX = 200;
 const cMarginY = 150;
 const bSizeX = 3600;
@@ -146,16 +146,14 @@ function onUpdate(state) {
         });
         if (player.isAlive === false)
             continue;
-        if (Math.abs(player.angle + Math.PI / 2) % (Math.PI * 2) > Math.PI)
-            if (player.angle < -Math.PI / 2)
-                img = loadedImages['pingu1.png'];
-            else
+        img = loadedImages['pingu1.png'];
+        console.log(player);
+        switch(player.color){
+            case -1:
                 img = loadedImages['pingu2.png'];
-        else
-            if (player.angle < -Math.PI / 2)
-                img = loadedImages['pingu2.png'];
-            else
-                img = loadedImages['pingu1.png'];
+            break;
+        }
+
         drawImage(img,
             player.x - viewPosX,
             player.y - viewPosY,

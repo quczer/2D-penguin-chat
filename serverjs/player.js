@@ -21,6 +21,7 @@ function Player(name, ctr) {
     this.isAlive = true;
     this.respawnCounter = 0;
     this.fragCtr = 0;
+    this.color = -1;
     this.lastChat= {
         data:'',
         killtime: 0

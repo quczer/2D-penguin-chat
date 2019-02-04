@@ -16,11 +16,12 @@ class User {
         var obj = JSON.parse(file);
         return obj;
     }
-    create(name, password) {
+    create(name, password, color) {
         let user = {
             id: Math.floor(Math.random()*1000000),
             name: name,
             hash: sha256(password),
+            color: color
         };
         let j = JSON.stringify(user);
         fs.writeFileSync('data/user/'+user.name+'.json', j);
