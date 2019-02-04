@@ -130,7 +130,7 @@ function onUpdate(state) {
         viewPosY = 0;
     if (viewPosY > bSizeY - cSizeY)
         viewPosY = bSizeY - cSizeY;
-        
+
     ctx.drawImage(loadedImages['bg2.jpg'], -viewPosX, -viewPosY);
     for (let id in state) {
         let player = state[id];
@@ -229,6 +229,8 @@ function onResourcesLoaded() {
     socket.on('playername', function (data) {
         username = data;
     });
+
+  //  socket.on('chat', receiveChat);
 
     document.getElementById('chat-input').
         addEventListener('keyup', function (event) {
