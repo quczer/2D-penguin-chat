@@ -24,7 +24,6 @@ let viewPosX = 0;
 let viewPosY = 0;
 let newsArray = [];
 let newsId = 0;
-var lastCha
 var movement = {
     up: false,
     down: false,
@@ -161,18 +160,25 @@ function onUpdate(state) {
             player.angle);
             
 
-        if (player.health >0)
+        if (player.lastChat.killtime > Date.now())
+        {
             drawImage(loadedImages['balloon1.png'],
                 player.x - viewPosX,
-                player.y - viewPosY - 50 - getScale(player) * 900,
-                0.1,
-                0);
-        if (player.health < 10)
-            drawImage(loadedImages['smoke.png'],
-                player.x - viewPosX,
-                player.y - viewPosY,
+                player.y - viewPosY-100,
                 planeScale,
-                Math.PI);
+                0);
+            ctx.font = "15px Comic Sans MS";
+            ctx.fillStyle = "black";
+            ctx.textAlign = "left";
+            var x = player.x - viewPosX-55;
+            var y = player.y - viewPosY-137;
+            var lineheight = 15;
+            var lines = player.lastChat.data.split('\n');
+            for (var i = 0; i<lines.length; i++)
+                ctx.fillText(lines[i], x, y + (i*lineheight) );
+
+            //ctx.fillText(player.lastChat.data , player.x - viewPosX-55, player.y - viewPosY-100);
+        }
 
         ctx.font = "15px Comic Sans MS";
         ctx.fillStyle = "red";
@@ -275,8 +281,39 @@ function onResourcesLoaded() {
 
 function submitChat() {
     data = document.getElementById('chat-input').value;
+    data=data.trim();
+    tab = data.split(" ");
+    text = "";
+    let j=0;  
+    temp="";
+    let i=0;
+    for( ;i<tab.length;i++)
+    {
+        
+        if(temp.length==0 ||(temp.length + tab[i].length<15))
+        {
+            temp+=tab[i]+" "
+        }
+        else
+        {
+            if(j<5)
+            {
+                text+=temp +"\n";
+                temp="";
+                j++;
+                i--;
+            }     
+            else 
+            {
+                break;
+            }
+        }
+    }
+    if(i == tab.length)
+        text+=temp;
+
     document.getElementById('chat-input').blur();
-    socket.emit('chat', data, Date() + 3000);
+    socket.emit('chat', text, Date.now() + 3000);
     document.getElementById('chat-input').value = '';
 }
 

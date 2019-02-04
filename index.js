@@ -131,16 +131,18 @@ io.on('connection', function (socket) {
         disconnectedTmp.push(`${players[socket.id].name} disconnected!`);
         delete players[socket.id];
     });
-    socket.on('chat', function (data, killtime) {
-        data = data.trim();
-        players[socket.id].lastChat = { data, killtime };
-        if (data == '') return;
-
-        console.log(players[socket.id].name + ': ' + data);
-        io.sockets.emit('chat', {
-            name: players[socket.id].name,
-            message: data,
-        });
+    socket.on('chat', function(data, killtime) {
+      data = data.trim();
+      players[socket.id].lastChat.data = data;
+      players[socket.id].lastChat.killtime = killtime;
+      //console.log(players[socket.id].lastChat)     
+      if (data == '') return;
+      
+      console.log(players[socket.id].name + ': ' + data);
+      io.sockets.emit('chat', {
+        name: players[socket.id].name,
+        message: data,
+      });
     });
 });
 
@@ -195,8 +197,9 @@ setInterval(function () {
             "angle": p.angle,
             "health": p.health,
             "isAlive": p.isAlive,
-            "respawnCounter": p.respawnCounter,
-            "fragCtr": p.fragCtr
+            "respawnCounter":p.respawnCounter,
+            "fragCtr": p.fragCtr,
+            "lastChat": p.lastChat
         });
     }
 
