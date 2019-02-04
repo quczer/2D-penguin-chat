@@ -14,7 +14,6 @@ function Player(name, ctr) {
     this.angle = getLucky(0, 3.1415 * 2);
     this.speed = 200;
     this.lastTime = Date.now();
-    this.rotSpeed = 1.3;
     this.lastTimeShoot = Date.now();
     this.shootSpeed = 0.2;
     this.health = 100;
@@ -50,36 +49,7 @@ function Player(name, ctr) {
 
         let speed = 10;
         let angle = 0;
-        /*
-        if (mov.up) {
-            if (mov.right)
-                angle = Math.PI * 1.75;
-            else if (mov.left)
-                angle = Math.PI * 1.25;
-            else
-                angle = Math.PI * 1.5;
-
-        } else if (mov.down) {
-            if (mov.right)
-                angle = Math.PI * 0.25;
-            else if (mov.left)
-                angle = Math.PI * 0.75;
-            else
-                angle = Math.PI * 0.5;
-        } else {
-            if (mov.right)
-                angle = 0;
-            else if (mov.left)
-                angle = Math.PI;
-            else
-                speed = 0;
-        }
-        if (speed > 0)
-            this.angle = (24 * this.angle + angle) / 25;
-        this.x += speed * Math.cos(this.angle);
-        this.y += speed * Math.sin(this.angle);
-        */
-
+       
         this.angle = Math.PI * 0.5;
         this.x += speed * (mov.right ? (mov.left ? 0 : 1) : (mov.left ? -1 : 0));
         this.y += speed * (mov.down ? (mov.up ? 0 : 1) : (mov.up ? -1 : 0));

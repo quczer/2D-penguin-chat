@@ -135,12 +135,6 @@ function onUpdate(state) {
     let scoreArray = [];
     for (let id in state) {
         let player = state[id];
-        scoreArray.push({
-            "name": player.name,
-            "frags": player.fragCtr
-        });
-        if (player.isAlive === false)
-            continue;
         img = loadedImages['pingu1.png'];
         console.log(player);
         switch(player.color){
@@ -163,6 +157,7 @@ function onUpdate(state) {
                 player.y - viewPosY-100,
                 planeScale,
                 0);
+
             ctx.font = "15px Comic Sans MS";
             ctx.fillStyle = "black";
             ctx.textAlign = "left";
@@ -172,28 +167,13 @@ function onUpdate(state) {
             var lines = player.lastChat.data.split('\n');
             for (var i = 0; i<lines.length; i++)
                 ctx.fillText(lines[i], x, y + (i*lineheight) );
-
-            //ctx.fillText(player.lastChat.data , player.x - viewPosX-55, player.y - viewPosY-100);
         }
 
         ctx.font = "15px Comic Sans MS";
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "black";
         ctx.textAlign = "center";
         ctx.fillText('[' + player.name + ']', player.x - viewPosX, player.y - viewPosY + nickOffset);
-    }
-
-    scoreArray.sort((a, b) => a.frags < b.frags);
-    ctx.font = "15px Comic Sans MS";
-    ctx.fillStyle = "green";
-    ctx.textAlign = "left";
-    let scoreTxt = "Top fighters:\n";
-    ctx.fillText(scoreTxt, 5, 15);
-    for (let pId in scoreArray) {
-        if (pId > 5)
-            break;
-        scoreTxt = `${scoreArray[pId].name}: ${scoreArray[pId].frags}\n`;
-        ctx.fillText(scoreTxt, 5, 30 + 15 * pId);
-    }
+    }  
 
     ctx.textAlign = "left";
     for (let nId in newsArray) {

@@ -122,7 +122,9 @@ io.on('connection', function (socket) {
         if (res !== false)
             io.sockets.emit('news', res);
     });
-    socket.on('disconnect', function () {
+    socket.on('disconnect', function() {
+        //console.log(`${players[socket.id].name} disconnected!`);
+        addNews(socket, `${players[socket.id].name} disconnected!`);
         disconnectedTmp.push(`${players[socket.id].name} disconnected!`);
         delete players[socket.id];
     });
