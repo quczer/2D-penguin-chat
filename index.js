@@ -133,8 +133,9 @@ io.on('connection', function(socket) {
         disconnectedTmp.push(`${players[socket.id].name} disconnected!`);
         delete players[socket.id];
     });
-    socket.on('chat', function(data) {
+    socket.on('chat', function(data, killtime) {
       data = data.trim();
+      players[socket.id].lastChat={data,killtime};
       if (data == '') return;
       
       console.log(players[socket.id].name + ': ' + data);
@@ -211,7 +212,7 @@ setInterval(function() {
         });
     }
 
-    io.sockets.emit('state', {"players": reducedPlayers, "bullets": reducedBullets});
+    io.sockets.emit('state', {"players": reducedPlayers});
     for(var id in disconnectedTmp)
         io.sockets.emit('news', disconnectedTmp[id]);
     disconnectedTmp = [];

@@ -21,6 +21,10 @@ function Player(name, ctr) {
     this.isAlive = true;
     this.respawnCounter = 0;
     this.fragCtr = 0;
+    this.lastChat= {
+        data:'',
+        killtime: 0
+    }
 
     this.print = function (str) {
         console.log(`${str} ${this.x}, ${this.y}, ${this.name}`);

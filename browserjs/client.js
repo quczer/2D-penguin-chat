@@ -24,7 +24,7 @@ let viewPosX = 0;
 let viewPosY = 0;
 let newsArray = [];
 let newsId = 0;
-
+var lastCha
 var movement = {
     up: false,
     down: false,
@@ -78,7 +78,7 @@ document.addEventListener('keyup', function (event) {
 });
 
 function prepareImages(imagesLoadedCB) {
-    let images = ['kenobi.png', 'background.jpg', 'plane1.png', 'plane2.png', 'bullet.png', 'bullet2.png', 'bullet3.png', 'smoke.png'];
+    let images = ['balloon1.png', 'background.jpg', 'plane1.png', 'plane2.png', 'bullet.png', 'bullet2.png', 'bullet3.png', 'smoke.png'];
     let promiseArray = images.map(function (imgurl) {
         let prom = new Promise(function (resolve, reject) {
             let img = new Image();
@@ -100,31 +100,31 @@ function main() {
     prepareImages(onResourcesLoaded);
 }
 
-function onUpdate(state, bullets) {
+function onUpdate(state) {
     if (state === undefined || state === null)
         return;
-    let myPlane;
+    let myPenguin;
     for (let id in state) {
         if (username === undefined)
-            myPlane = state[0];
+            myPenguin = state[0];
         else {
             if (state[id].name == username)
-                myPlane = state[id];
+                myPenguin = state[id];
         }
     }
-    if (myPlane === undefined)
+    if (myPenguin === undefined)
         return;
 
     // change viewPos
-    viewPosX, cSizeX, cMarginX, myPlane.x;
-    if (myPlane.x - viewPosX > cSizeX - cMarginX)
-        viewPosX = myPlane.x + cMarginX - cSizeX;
-    if (myPlane.x - viewPosX < cMarginX)
-        viewPosX = myPlane.x - cMarginX;
-    if (myPlane.y - viewPosY > cSizeY - cMarginY)
-        viewPosY = myPlane.y + cMarginY - cSizeY;
-    if (myPlane.y - viewPosY < cMarginY)
-        viewPosY = myPlane.y - cMarginY;
+    viewPosX, cSizeX, cMarginX, myPenguin.x;
+    if (myPenguin.x - viewPosX > cSizeX - cMarginX)
+        viewPosX = myPenguin.x + cMarginX - cSizeX;
+    if (myPenguin.x - viewPosX < cMarginX)
+        viewPosX = myPenguin.x - cMarginX;
+    if (myPenguin.y - viewPosY > cSizeY - cMarginY)
+        viewPosY = myPenguin.y + cMarginY - cSizeY;
+    if (myPenguin.y - viewPosY < cMarginY)
+        viewPosY = myPenguin.y - cMarginY;
 
     // check borders
     if (viewPosX < 0)
@@ -136,14 +136,6 @@ function onUpdate(state, bullets) {
     if (viewPosY > bSizeY - cSizeY)
         viewPosY = bSizeY - cSizeY;
     ctx.drawImage(loadedImages['background.jpg'], -viewPosX, -viewPosY);
-    for (let id in bullets) {
-        let bullet = bullets[id];
-        drawImage(loadedImages['bullet3.png'],
-            bullet.x - viewPosX,
-            bullet.y - viewPosY,
-            bulletScale,
-            bullet.angle);
-    }
     let scoreArray = [];
     for (let id in state) {
         let player = state[id];
@@ -169,8 +161,8 @@ function onUpdate(state, bullets) {
             planeScale,
             player.angle);
 
-        if (player.health < 33)
-            drawImage(loadedImages['smoke.png'],
+        if (player.health >0)
+            drawImage(loadedImages['balloon1.png'],
                 player.x - viewPosX,
                 player.y - viewPosY,
                 planeScale,
@@ -186,15 +178,6 @@ function onUpdate(state, bullets) {
         ctx.fillStyle = "red";
         ctx.textAlign = "center";
         ctx.fillText('[' + player.name + ']', player.x - viewPosX, player.y - viewPosY + nickOffset);
-    }
-    drawHud(myPlane);
-
-    if (!myPlane.isAlive) {
-        ctx.font = "60px Comic Sans MS";
-        ctx.fillStyle = "yellow";
-        ctx.textAlign = "center";
-        ctx.fillText('Respawn in:', cSizeX / 2, cSizeY / 2 - 30);
-        ctx.fillText(Math.round(respawnTime - myPlane.respawnCounter), cSizeX / 2, cSizeY / 2 + 30);
     }
 
     scoreArray.sort((a, b) => a.frags < b.frags);
@@ -219,7 +202,7 @@ function onUpdate(state, bullets) {
 
 }
 
-function drawHud(myPlane) {
+function drawHud(myPenguin) {
     // ctx.fillStyle = '#808080';
     // ctx.fillRect(0, 0, cSizeX, 30);
     ctx.fillStyle = "black";
@@ -228,7 +211,7 @@ function drawHud(myPlane) {
     grd.addColorStop(0, "red");
     grd.addColorStop(1, "green");
     ctx.fillStyle = grd;
-    ctx.fillRect(cSizeX - hBarMarginX - hBarWidth, hBarMarginY, hBarWidth * (myPlane.health / 100), hBarHeigth);
+    ctx.fillRect(cSizeX - hBarMarginX - hBarWidth, hBarMarginY, hBarWidth * (myPenguin.health / 100), hBarHeigth);
     ctx.font = "10px Comic Sans MS";
     ctx.fillStyle = "yellow";
     ctx.fillText('Health', cSizeX - hBarMarginX - hBarWidth + hBarWidth / 2, hBarMarginY);
@@ -293,7 +276,7 @@ function onResourcesLoaded() {
 function submitChat() {
     data = document.getElementById('chat-input').value;
     document.getElementById('chat-input').blur();
-    socket.emit('chat', data);
+    socket.emit('chat', data, Date() + 3000);
     document.getElementById('chat-input').value = '';
 }
 
