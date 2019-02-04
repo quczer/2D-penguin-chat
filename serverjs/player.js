@@ -50,8 +50,9 @@ function Player(name, ctr) {
             }
         }
 
-        let speed = 2;
+        let speed = 10;
         let angle = 0;
+        /*
         if (mov.up) {
             if (mov.right)
                 angle = Math.PI * 1.75;
@@ -75,11 +76,15 @@ function Player(name, ctr) {
             else
                 speed = 0;
         }
-
         if (speed > 0)
             this.angle = (24 * this.angle + angle) / 25;
         this.x += speed * Math.cos(this.angle);
         this.y += speed * Math.sin(this.angle);
+        */
+
+        this.angle = Math.PI * 0.5;
+        this.x += speed * (mov.right ? (mov.left ? 0 : 1) : (mov.left ? -1 : 0));
+        this.y += speed * (mov.down ? (mov.up ? 0 : 1) : (mov.up ? -1 : 0));
         return false;
     }
 

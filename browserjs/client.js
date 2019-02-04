@@ -9,12 +9,12 @@ let playerColor = "rgb(179, 71, 0)";
 const respawnTime = 7;
 const planeScale = 0.1;
 const bulletScale = 0.12;
-const cSizeX = 800;
-const cSizeY = 600;
+const cSizeX = 1800;
+const cSizeY = 800;
 const cMarginX = 200;
 const cMarginY = 150;
-const bSizeX = 1920;
-const bSizeY = 1200;
+const bSizeX = 3600;
+const bSizeY = 1800;
 const nickOffset = 32;
 const hBarMarginX = 20;
 const hBarMarginY = 15;
@@ -53,8 +53,6 @@ document.addEventListener('keydown', function (event) {
             case 83: // S
                 movement.down = true;
                 break;
-
-
         }
 });
 
@@ -78,7 +76,7 @@ document.addEventListener('keyup', function (event) {
 });
 
 function prepareImages(imagesLoadedCB) {
-    let images = ['balloon1.png', 'background.jpg', 'plane1.png', 'plane2.png', 'bullet.png', 'bullet2.png', 'bullet3.png', 'smoke.png'];
+    let images = ['balloon1.png', 'bg2.jpg', 'pingu1.png', 'pingu2.png', 'bullet.png', 'bullet2.png', 'bullet3.png', 'smoke.png'];
     let promiseArray = images.map(function (imgurl) {
         let prom = new Promise(function (resolve, reject) {
             let img = new Image();
@@ -135,7 +133,7 @@ function onUpdate(state) {
         viewPosY = 0;
     if (viewPosY > bSizeY - cSizeY)
         viewPosY = bSizeY - cSizeY;
-    ctx.drawImage(loadedImages['background.jpg'], -viewPosX, -viewPosY);
+    ctx.drawImage(loadedImages['bg2.jpg'], -viewPosX, -viewPosY);
     let scoreArray = [];
     for (let id in state) {
         let player = state[id];
@@ -147,19 +145,20 @@ function onUpdate(state) {
             continue;
         if (Math.abs(player.angle + Math.PI / 2) % (Math.PI * 2) > Math.PI)
             if (player.angle < -Math.PI / 2)
-                img = loadedImages['plane1.png'];
+                img = loadedImages['pingu1.png'];
             else
-                img = loadedImages['plane2.png'];
+                img = loadedImages['pingu2.png'];
         else
             if (player.angle < -Math.PI / 2)
-                img = loadedImages['plane2.png'];
+                img = loadedImages['pingu2.png'];
             else
-                img = loadedImages['plane1.png'];
+                img = loadedImages['pingu1.png'];
         drawImage(img,
             player.x - viewPosX,
             player.y - viewPosY,
-            planeScale,
+            Math.max(0.03, 0.250 * player.y/bSizeY),
             player.angle);
+            
 
         if (player.health >0)
             drawImage(loadedImages['balloon1.png'],
