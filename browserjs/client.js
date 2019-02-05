@@ -18,8 +18,6 @@ const hBarWidth = 100;
 const hBarHeigth = 10;
 let viewPosX = 0;
 let viewPosY = 0;
-let newsArray = [];
-let newsId = 0;
 var movement = {
     up: false,
     down: false,
@@ -178,14 +176,6 @@ function onUpdate(state) {
         ctx.textAlign = "center";
         ctx.fillText('[' + player.name + ']', player.x - viewPosX, player.y - viewPosY + nickOffset);
     }
-
-    ctx.textAlign = "left";
-    for (let nId in newsArray) {
-        scoreTxt = `${newsArray[nId].news}\n`;
-        console.log(scoreTxt);
-        ctx.fillText(scoreTxt, 5, 30 + 75 + 15 * nId);
-    }
-
 }
 
 function drawImage(image, x, y, scale, rotation) {
@@ -194,22 +184,6 @@ function drawImage(image, x, y, scale, rotation) {
     ctx.drawImage(image, -image.width / 2, -image.height / 2);
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-}
-
-function onNews(data) {
-    let tmpNewsId = newsId++;
-    newsArray.push({
-        "news": data,
-        "newsId": tmpNewsId
-    });
-    console.log(data);
-    setTimeout(function () {
-        for (let id in newsArray) {
-            if (newsArray[id].newsId == tmpNewsId) {
-                newsArray.splice(id, 1);
-            }
-        }
-    }, 3000);
 }
 
 function onResourcesLoaded() {
@@ -226,11 +200,6 @@ function onResourcesLoaded() {
     socket.on('state', function (data) {
         onUpdate(data.players, data.bullets);
     });
-
-    socket.on('news', function (data) {
-        onNews(data);
-    });
-
     socket.on('playerdata', function (playername, playercolor) {
         username = playername;
         usercolor = playercolor;

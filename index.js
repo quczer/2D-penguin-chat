@@ -106,29 +106,19 @@ server.listen(app.get('port'), function () {
     console.log(`server created on port ${app.get('port')}`);
 });
 
-function addNews(socket, msg) {
-    socket.emit('news', msg);
-}
-
 let players = {};
-let disconnectedTmp = [];
 
 io.on('connection', function (socket) {
     console.log('someone connected, show him da wey brotherz');
     socket.on('new_player', function (data) {
         players[socket.id] = new Player(userName, userColor,160,1951,330,853);
         players[socket.id].print('New player');
-        addNews(socket, `${players[socket.id].name} connected!`);
         socket.emit('playerdata', userName, userColor);
     });
     socket.on('movement', function (data) {
         let res = players[socket.id].act(data);
-        if (res !== false)
-            io.sockets.emit('news', res);
     });
     socket.on('disconnect', function() {
-        addNews(socket, `${players[socket.id].name} disconnected!`);
-        disconnectedTmp.push(`${players[socket.id].name} disconnected!`);
         delete players[socket.id];
     });
     socket.on('chat', function(data, killtime) {
@@ -154,7 +144,4 @@ setInterval(function() {
     }
 
     io.sockets.emit('state', {"players": updatedPlayers});
-    for(var id in disconnectedTmp)
-        io.sockets.emit('news', disconnectedTmp[id]);
-    disconnectedTmp = [];
 }, 1000 / 60);
